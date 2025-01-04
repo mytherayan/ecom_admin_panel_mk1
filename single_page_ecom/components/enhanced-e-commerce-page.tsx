@@ -8,7 +8,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
-import { ShoppingCart, Plus, Minus, X, Star, CreditCard,Rocket,ClipboardList,ListOrdered,CircleUser } from 'lucide-react'
+import { ShoppingCart, Plus, Minus, X, Star, CreditCard,Rocket,ClipboardList,ListOrdered,CircleUser,List,Menu, User } from 'lucide-react'
+import RazorpayPayment from './RazorpayPayment';
+
 
 // Product type definition
 type Product = {
@@ -88,172 +90,22 @@ export function EnhancedECommercePage() {
       setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
+    const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
+  
+    const handlePaymentSuccess = (paymentId: string) => {
+      // Handle payment success (e.g., send paymentId to the server, show success message)
+      setPaymentStatus(`Payment Successful! Payment ID: ${paymentId}`);
+    };
+  
+    const handlePaymentFailure = (error: string) => {
+      // Handle payment failure (e.g., show error message)
+      setPaymentStatus(`Payment Failed: ${error}`);
+    };
+  
+
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      {/* <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center justify-between text-2xl font-bold text-gray-800"> <Rocket className="h-10 w-10" /> <span>  DotShop</span></div>
-          <nav className="hidden md:flex space-x-4">
-            <a href="#" className="text-gray-400 hover:text-black">Home</a>
-            <a href="#" className="text-gray-400 hover:text-black">Shop</a>
-            <a href="#" className="text-gray-400 hover:text-black">About</a>
-            <a href="#" className="text-gray-400 hover:text-black">Contact</a>
-          </nav>
-          <nav className="hidden md:flex space-x-4">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="relative">
-                <ShoppingCart className="h-5 w-5" />
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {totalItems}
-                  </span>
-                )}
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Shopping Cart</SheetTitle>
-              </SheetHeader>
-              {cart.length === 0 ? (
-                <p className="text-center text-gray-500 mt-4">Your cart is empty</p>
-              ) : (
-                <div className="mt-4 space-y-4">
-                  {cart.map(item => (
-                    <div key={item.id} className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded" />
-                        <div>
-                          <h3 className="font-semibold">{item.name}</h3>
-                          <p className="text-sm text-gray-500">₹{item.price.toFixed(2)}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
-                          <Minus className="h-4 w-4" />
-                        </Button>
-                        <span>{item.quantity}</span>
-                        <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                        <Button variant="destructive" size="icon" onClick={() => removeFromCart(item.id)}>
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="border-t pt-4">
-                    <p className="font-semibold">Total: ₹{totalPrice.toFixed(2)}</p>
-                    <Button className="w-full mt-4" onClick={() => setCheckoutStep(1)}>Proceed to Checkout</Button>
-                  </div>
-                </div>
-              )}
-            </SheetContent>
-          </Sheet>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="relative">
-                <ListOrdered className="h-5 w-5" />
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {totalItems}
-                  </span>
-                )}
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Shopping Cart</SheetTitle>
-              </SheetHeader>
-              {cart.length === 0 ? (
-                <p className="text-center text-gray-500 mt-4">Your cart is empty</p>
-              ) : (
-                <div className="mt-4 space-y-4">
-                  {cart.map(item => (
-                    <div key={item.id} className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded" />
-                        <div>
-                          <h3 className="font-semibold">{item.name}</h3>
-                          <p className="text-sm text-gray-500">₹{item.price.toFixed(2)}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
-                          <Minus className="h-4 w-4" />
-                        </Button>
-                        <span>{item.quantity}</span>
-                        <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                        <Button variant="destructive" size="icon" onClick={() => removeFromCart(item.id)}>
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="border-t pt-4">
-                    <p className="font-semibold">Total: ₹{totalPrice.toFixed(2)}</p>
-                    <Button className="w-full mt-4" onClick={() => setCheckoutStep(1)}>Proceed to Checkout</Button>
-                  </div>
-                </div>
-              )}
-            </SheetContent>
-          </Sheet>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="relative">
-                <CircleUser className="h-5 w-5" />
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {totalItems}
-                  </span>
-                )}
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Shopping Cart</SheetTitle>
-              </SheetHeader>
-              {cart.length === 0 ? (
-                <p className="text-center text-gray-500 mt-4">Your cart is empty</p>
-              ) : (
-                <div className="mt-4 space-y-4">
-                  {cart.map(item => (
-                    <div key={item.id} className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded" />
-                        <div>
-                          <h3 className="font-semibold">{item.name}</h3>
-                          <p className="text-sm text-gray-500">₹{item.price.toFixed(2)}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
-                          <Minus className="h-4 w-4" />
-                        </Button>
-                        <span>{item.quantity}</span>
-                        <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                        <Button variant="destructive" size="icon" onClick={() => removeFromCart(item.id)}>
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="border-t pt-4">
-                    <p className="font-semibold">Total: ₹{totalPrice.toFixed(2)}</p>
-                    <Button className="w-full mt-4" onClick={() => setCheckoutStep(1)}>Proceed to Checkout</Button>
-                  </div>
-                </div>
-              )}
-            </SheetContent>
-          </Sheet>
-          </nav>
-        </div>
-      </header> */}
+     
       {/* Core Provided Header */}
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -268,7 +120,7 @@ export function EnhancedECommercePage() {
             className="md:hidden flex items-center justify-center text-gray-600 hover:text-black"
             onClick={toggleMobileMenu}
           >
-            <ListOrdered className="h-6 w-6" />
+            <Menu className="h-6 w-6" />
           </button>
 
           {/* Desktop Menu */}
@@ -328,6 +180,61 @@ export function EnhancedECommercePage() {
               )}
             </SheetContent>
             </Sheet>
+            <Sheet>
+  <SheetTrigger asChild>
+    <Button variant="outline" size="icon" className="relative">
+      <User className="h-5 w-5" />
+    </Button>
+  </SheetTrigger>
+
+  <SheetContent>
+    <SheetHeader>
+      <SheetTitle>User</SheetTitle>
+    </SheetHeader>
+
+    {/* Login Form Section */}
+    <div className="space-y-4">
+      {/* <h2 className="text-lg font-semibold">Login</h2> */}
+      <form>
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="username" className="text-sm font-medium">Username</label>
+          <input 
+            type="text" 
+            id="username" 
+            name="username" 
+            className="px-4 py-2 border border-gray-300 rounded-md" 
+            placeholder="Enter your username"
+          />
+
+          <label htmlFor="password" className="text-sm font-medium">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            className="px-4 py-2 border border-gray-300 rounded-md" 
+            placeholder="Enter your password"
+          />
+
+          <button type="submit" className="mt-4 bg-black text-white py-2 px-4 rounded-md hover:bg-blue-700">
+            Login
+          </button>
+        </div>
+      </form>
+    </div>
+
+    {/* User Details Section */}
+    {/* <div className="mt-8 space-y-4">
+      <h2 className="text-lg font-semibold">User Details</h2>
+      <div className="space-y-2">
+        <p><strong>Name:</strong> John Doe</p>
+        <p><strong>Email:</strong> john.doe@example.com</p>
+        <p><strong>Username:</strong> johndoe</p>
+        <p><strong>Role:</strong> Administrator</p>
+      </div>
+    </div> */}
+  </SheetContent>
+              </Sheet>
+
           </nav>
         </div>
       </header>
@@ -349,6 +256,7 @@ export function EnhancedECommercePage() {
               <a href="#" className="text-gray-600 hover:text-black">Contact</a>
 
               {/* Shopping Cart for Mobile */}
+              <nav className="flex items-center space-x-4">
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="outline" size="icon" className="relative">
@@ -399,6 +307,62 @@ export function EnhancedECommercePage() {
               )}
             </SheetContent>
               </Sheet>
+              <Sheet>
+  <SheetTrigger asChild>
+    <Button variant="outline" size="icon" className="relative">
+      <User className="h-5 w-5" />
+    </Button>
+  </SheetTrigger>
+
+  <SheetContent>
+    <SheetHeader>
+      <SheetTitle>User</SheetTitle>
+    </SheetHeader>
+
+    {/* Login Form Section */}
+    <div className="space-y-4">
+      {/* <h2 className="text-lg font-semibold">Login</h2> */}
+      <form>
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="username" className="text-sm font-medium">Username</label>
+          <input 
+            type="text" 
+            id="username" 
+            name="username" 
+            className="px-4 py-2 border border-gray-300 rounded-md" 
+            placeholder="Enter your username"
+          />
+
+          <label htmlFor="password" className="text-sm font-medium">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            className="px-4 py-2 border border-gray-300 rounded-md" 
+            placeholder="Enter your password"
+          />
+
+          <button type="submit" className="mt-4 bg-black text-white py-2 px-4 rounded-md hover:bg-blue-700">
+            Login
+          </button>
+        </div>
+      </form>
+    </div>
+
+    {/* User Details Section */}
+    {/* <div className="mt-8 space-y-4">
+      <h2 className="text-lg font-semibold">User Details</h2>
+      <div className="space-y-2">
+        <p><strong>Name:</strong> John Doe</p>
+        <p><strong>Email:</strong> john.doe@example.com</p>
+        <p><strong>Username:</strong> johndoe</p>
+        <p><strong>Role:</strong> Administrator</p>
+      </div>
+    </div> */}
+  </SheetContent>
+              </Sheet>
+
+            </nav>
             </nav>
           </div>
         </div>
@@ -613,9 +577,19 @@ export function EnhancedECommercePage() {
                   <span>₹{totalPrice.toFixed(2)}</span>
                 </div>
               </div>
-              <Button className="w-full mt-4" onClick={() =>   setCheckoutStep(2)}>
-                Proceed to Payment
-              </Button>
+               <Button className="w-full mt-4" onClick={() => {setOrderComplete(false); setCheckoutStep(0);paymentStatus && <div>{paymentStatus}</div>}}>
+                {/* Proceed to Payment */}
+                
+                <RazorpayPayment
+  amount={Number(totalPrice.toFixed(2))*100} // Amount in paise (e.g., 5000 paise = 50 INR)
+  onSuccess={(paymentId) => {
+    console.log("Payment Successful!", paymentId);
+  }}
+  onFailure={(error) => {
+    console.error("Payment Failed", error);
+  }}
+/>
+ </Button> 
             </div>
           )}
           {checkoutStep === 2 && (
@@ -745,3 +719,170 @@ const submitOrder = async (orderData) => {
 //   }
 // };
 */
+
+
+
+ {/* Header */}
+      {/* <header className="bg-white shadow-sm">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="flex items-center justify-between text-2xl font-bold text-gray-800"> <Rocket className="h-10 w-10" /> <span>  DotShop</span></div>
+          <nav className="hidden md:flex space-x-4">
+            <a href="#" className="text-gray-400 hover:text-black">Home</a>
+            <a href="#" className="text-gray-400 hover:text-black">Shop</a>
+            <a href="#" className="text-gray-400 hover:text-black">About</a>
+            <a href="#" className="text-gray-400 hover:text-black">Contact</a>
+          </nav>
+          <nav className="hidden md:flex space-x-4">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="relative">
+                <ShoppingCart className="h-5 w-5" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Shopping Cart</SheetTitle>
+              </SheetHeader>
+              {cart.length === 0 ? (
+                <p className="text-center text-gray-500 mt-4">Your cart is empty</p>
+              ) : (
+                <div className="mt-4 space-y-4">
+                  {cart.map(item => (
+                    <div key={item.id} className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded" />
+                        <div>
+                          <h3 className="font-semibold">{item.name}</h3>
+                          <p className="text-sm text-gray-500">₹{item.price.toFixed(2)}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <span>{item.quantity}</span>
+                        <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                        <Button variant="destructive" size="icon" onClick={() => removeFromCart(item.id)}>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="border-t pt-4">
+                    <p className="font-semibold">Total: ₹{totalPrice.toFixed(2)}</p>
+                    <Button className="w-full mt-4" onClick={() => setCheckoutStep(1)}>Proceed to Checkout</Button>
+                  </div>
+                </div>
+              )}
+            </SheetContent>
+          </Sheet>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="relative">
+                <ListOrdered className="h-5 w-5" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Shopping Cart</SheetTitle>
+              </SheetHeader>
+              {cart.length === 0 ? (
+                <p className="text-center text-gray-500 mt-4">Your cart is empty</p>
+              ) : (
+                <div className="mt-4 space-y-4">
+                  {cart.map(item => (
+                    <div key={item.id} className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded" />
+                        <div>
+                          <h3 className="font-semibold">{item.name}</h3>
+                          <p className="text-sm text-gray-500">₹{item.price.toFixed(2)}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <span>{item.quantity}</span>
+                        <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                        <Button variant="destructive" size="icon" onClick={() => removeFromCart(item.id)}>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="border-t pt-4">
+                    <p className="font-semibold">Total: ₹{totalPrice.toFixed(2)}</p>
+                    <Button className="w-full mt-4" onClick={() => setCheckoutStep(1)}>Proceed to Checkout</Button>
+                  </div>
+                </div>
+              )}
+            </SheetContent>
+          </Sheet>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="relative">
+                <CircleUser className="h-5 w-5" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Shopping Cart</SheetTitle>
+              </SheetHeader>
+              {cart.length === 0 ? (
+                <p className="text-center text-gray-500 mt-4">Your cart is empty</p>
+              ) : (
+                <div className="mt-4 space-y-4">
+                  {cart.map(item => (
+                    <div key={item.id} className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded" />
+                        <div>
+                          <h3 className="font-semibold">{item.name}</h3>
+                          <p className="text-sm text-gray-500">₹{item.price.toFixed(2)}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <span>{item.quantity}</span>
+                        <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                        <Button variant="destructive" size="icon" onClick={() => removeFromCart(item.id)}>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="border-t pt-4">
+                    <p className="font-semibold">Total: ₹{totalPrice.toFixed(2)}</p>
+                    <Button className="w-full mt-4" onClick={() => setCheckoutStep(1)}>Proceed to Checkout</Button>
+                  </div>
+                </div>
+              )}
+            </SheetContent>
+          </Sheet>
+          </nav>
+        </div>
+      </header> */}
