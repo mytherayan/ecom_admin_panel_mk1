@@ -6,9 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
-import { ShoppingCart, Plus, Minus, X, Star, CreditCard,Rocket,ClipboardList,ListOrdered,CircleUser,List,Menu, User } from 'lucide-react'
+import { ShoppingCart, Plus, Minus, X, Star, Rocket,Menu, User } from 'lucide-react'
 import RazorpayPayment from './RazorpayPayment';
 
 
@@ -40,7 +39,7 @@ type CartItem = Product & { quantity: number }
 
 export function EnhancedECommercePage() {
   const [cart, setCart] = useState<CartItem[]>([])
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  // const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [checkoutStep, setCheckoutStep] = useState(0)
   const [orderComplete, setOrderComplete] = useState(false)
 
@@ -90,17 +89,17 @@ export function EnhancedECommercePage() {
       setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
+    const [paymentStatus] = useState<string | null>(null);
   
-    const handlePaymentSuccess = (paymentId: string) => {
-      // Handle payment success (e.g., send paymentId to the server, show success message)
-      setPaymentStatus(`Payment Successful! Payment ID: ${paymentId}`);
-    };
+    // const handlePaymentSuccess = (paymentId: string) => {
+    //   // Handle payment success (e.g., send paymentId to the server, show success message)
+    //   setPaymentStatus(`Payment Successful! Payment ID: ${paymentId}`);
+    // };
   
-    const handlePaymentFailure = (error: string) => {
-      // Handle payment failure (e.g., show error message)
-      setPaymentStatus(`Payment Failed: ${error}`);
-    };
+    // const handlePaymentFailure = (error: string) => {
+    //   // Handle payment failure (e.g., show error message)
+    //   setPaymentStatus(`Payment Failed: ${error}`);
+    // };
   
 
   return (
@@ -393,12 +392,23 @@ export function EnhancedECommercePage() {
     <p className="text-xl md:text-2xl mb-12 max-w-xl mx-auto opacity-80">
       Discover exclusive products curated just for you. Luxury, style, and quality — all at unbeatable prices.
     </p>
-    <Button 
+    {/* <Button 
       size="lg" 
       className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white hover:bg-gradient-to-l hover:from-indigo-800 hover:to-indigo-600 transition-all duration-300 ease-in-out py-3 px-6 rounded-full text-lg shadow-lg"
     >
       Shop Now
-    </Button>
+    </Button> */}
+    <Button
+  size="lg"
+  className="bg-gradient-to-r from-[#F9D423] via-[#FFD700] to-[#FFEC8B] text-white 
+    hover:bg-gradient-to-l hover:from-[#FFEC8B] hover:via-[#FFD700] hover:to-[#F9D423] 
+    transition-all duration-300 ease-in-out py-3 px-6 rounded-full text-lg shadow-lg 
+    hover:shadow-[0_0_20px_#FFD700,0_0_40px_#FFEC8B]"
+>
+  Shop Now
+</Button>
+
+
   </div>
 </section>
 
@@ -577,7 +587,24 @@ export function EnhancedECommercePage() {
                   <span>₹{totalPrice.toFixed(2)}</span>
                 </div>
               </div>
-               <Button className="w-full mt-4" onClick={() => {setOrderComplete(false); setCheckoutStep(0);paymentStatus && <div>{paymentStatus}</div>}}>
+               {/* <Button className="w-full mt-4" 
+               onClick={() => {setOrderComplete(false); setCheckoutStep(0);
+               paymentStatus && <div>{paymentStatus}</div>}}> */}
+               <Button className="w-full mt-4" 
+        onClick={() => 
+          
+          {
+          setOrderComplete(false); 
+          setCheckoutStep(0);
+          
+          if (paymentStatus) {
+            // You can do something here, such as logging or handling the payment status
+            console.log(paymentStatus);  // Or any other action you'd like to take
+          }
+        }
+        
+        }>
+
                 {/* Proceed to Payment */}
                 
                 <RazorpayPayment
